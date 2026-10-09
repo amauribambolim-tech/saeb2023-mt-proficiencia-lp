@@ -40,7 +40,7 @@ Recorte: Mato Grosso, escolas públicas, prova de Língua Portuguesa, estudantes
 
 O notebook 04 leva de 8 a 15 minutos para rodar. Os demais levam poucos minutos.
 
-Para usar outra pasta, altere a linha `PASTA = '/content/drive/MyDrive/dissertacao/'` no início de cada notebook.
+Para usar outra pasta, altere a linha `PASTA = '/content/drive/MyDrive/dissertacao/'` no início de cada notebook.****
 
 ## Reprodutibilidade
 
@@ -50,7 +50,7 @@ Para usar outra pasta, altere a linha `PASTA = '/content/drive/MyDrive/dissertac
 
 ## Como citar
 
-\[Referência da dissertação, no formato ABNT]
+BAMBOLIM, Amauri. Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso: uma análise por mineração de dados educacionais com dados do SAEB 2023. 2026. Dissertação (Mestrado em Educação e Novas Tecnologias) – Centro Universitário Internacional Uninter, Curitiba, 2026.
 
 ## Licença
 
