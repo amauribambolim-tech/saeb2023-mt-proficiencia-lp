@@ -1,0 +1,11 @@
+# Bibliotecas usadas nos notebooks (todas já vêm instaladas no Google Colab, exceto skrebate,
+# que o notebook 04 instala automaticamente)
+numpy
+pandas
+pyarrow
+openpyxl
+scipy
+statsmodels
+scikit-learn
+matplotlib
+skrebate
