@@ -1,13 +1,9 @@
-# Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso (SAEB 2023)
+Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso (SAEB 2023)
 
 Este repositório reúne o código e os dados usados na dissertação de mestrado
 
-FATORES ASSOCIADOS À PROFICIÊNCIA EM LÍNGUA PORTUGUESA 
-
-NO ENSINO MÉDIO PÚBLICO DE MATO GROSSO: UMA ANÁLISE POR MINERAÇÃO DE DADOS EDUCACIONAIS COM DADOS DO SAEB 2023
-
-> Amauri Bambolim — Programa de Pós-Graduação em Educação e Novas Tecnologias, Uninter, 2026.
-
+Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso: uma análise por mineração de dados educacionais com dados do SAEB 2023
+Amauri Bambolim — Programa de Pós-Graduação em Educação e Novas Tecnologias, Uninter, 2026.
 O objetivo é permitir que qualquer pessoa confira e reproduza todas as tabelas e figuras da pesquisa, e que outras secretarias, escolas e pesquisadores possam adaptar os procedimentos a outros recortes.
 
 ## O que há aqui
