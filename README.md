@@ -1,12 +1,10 @@
 # Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso (SAEB 2023)
 
-Este repositório reúne o código e os dados usados na dissertação de mestrado
-
-FATORES ASSOCIADOS À PROFICIÊNCIA EM LÍNGUA PORTUGUESA 
-
-NO ENSINO MÉDIO PÚBLICO DE MATO GROSSO: UMA ANÁLISE POR MINERAÇÃO DE DADOS EDUCACIONAIS COM DADOS DO SAEB 2023
+Este repositório reúne o código e os dados usados na dissertação de mestrado *Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso: uma análise por mineração de dados educacionais com dados do SAEB 2023*.
 
 > Amauri Bambolim — Programa de Pós-Graduação em Educação e Novas Tecnologias, Uninter, 2026.
+
+**Painel de resultados:** [amauribambolim-tech.github.io/saeb2023-mt-proficiencia-lp](https://amauribambolim-tech.github.io/saeb2023-mt-proficiencia-lp/)
 
 O objetivo é permitir que qualquer pessoa confira e reproduza todas as tabelas e figuras da pesquisa, e que outras secretarias, escolas e pesquisadores possam adaptar os procedimentos a outros recortes.
 
@@ -14,30 +12,31 @@ O objetivo é permitir que qualquer pessoa confira e reproduza todas as tabelas 
 
 |Arquivo|Conteúdo|
 |-|-|
-|`consulta\_saeb2023\_mt.sql`|Consulta usada para extrair os microdados do SAEB 2023 na Base dos Dados (Google BigQuery)|
-|`saeb2023\_mt\_bruta\_completa.csv`|Resultado dessa consulta: 24.464 registros de estudantes|
-|`01\_base\_analitica.ipynb`|Da base bruta à base analítica: exclusões, recodificação e tratamento das respostas ausentes|
-|`02\_descritivas\_e\_testes.ipynb`|Estatísticas descritivas, testes de diferença entre grupos e tamanhos de efeito|
-|`03\_regressao.ipynb`|Regressão linear com erros-padrão agrupados por escola e análises de sensibilidade|
-|`04\_comparacao\_metodos.ipynb`|RReliefF, Random Forest e comparação das medidas de relevância dos atributos|
-|`04b\_comparacao\_categorias.ipynb`|A mesma comparação, com as categorias dos atributos nominais separadas|
-|`05\_resiliencia.ipynb`|Resiliência acadêmica com o INSE do INEP|
-|`06\_validade\_q23b.ipynb`|Verificação da validade da resposta ao item Q23b (estilos de resposta)|
-|`07\_analises\_complementares.ipynb`|Níveis de proficiência, língua falada em casa e outras análises complementares|
+|`consulta_saeb2023_mt.sql`|Consulta usada para extrair os microdados do SAEB 2023 na Base dos Dados (Google BigQuery)|
+|`saeb2023_mt_bruta_completa.csv`|Resultado dessa consulta: 24.464 registros de estudantes|
+|`01_base_analitica.ipynb`|Da base bruta à base analítica: exclusões, recodificação e tratamento das respostas ausentes|
+|`02_descritivas_e_testes.ipynb`|Estatísticas descritivas, testes de diferença entre grupos e tamanhos de efeito|
+|`03_regressao.ipynb`|Regressão linear com erros-padrão agrupados por escola e análises de sensibilidade|
+|`04_comparacao_metodos.ipynb`|RReliefF, Random Forest e comparação das medidas de relevância dos atributos|
+|`04b_comparacao_categorias.ipynb`|A mesma comparação, com as categorias dos atributos nominais separadas|
+|`05_resiliencia.ipynb`|Resiliência acadêmica com o INSE do INEP|
+|`06_validade_q23b.ipynb`|Verificação da validade da resposta ao item Q23b (estilos de resposta)|
+|`07_analises_complementares.ipynb`|Níveis de proficiência, língua falada em casa e outras análises complementares|
 |`requirements.txt`|Bibliotecas Python usadas|
+|`index.html`|Painel interativo com os principais resultados (publicado pelo GitHub Pages)|
 
 Os notebooks estão salvos com os resultados já calculados. Para ver as tabelas e figuras, basta abrir o notebook aqui mesmo no GitHub.
 
 ## Os dados
 
-Os dados são os microdados públicos do SAEB 2023, divulgados pelo INEP e disponibilizados pela [Base dos Dados](https://basedosdados.org) (tabela `basedosdados.br\_inep\_saeb.aluno\_em\_34ano`). Os códigos de escola, turma e estudante são mascarados pelo próprio INEP, e não há nenhuma informação que permita identificar pessoas.
+Os dados são os microdados públicos do SAEB 2023, divulgados pelo INEP e disponibilizados pela [Base dos Dados](https://basedosdados.org) (tabela `basedosdados.br_inep_saeb.aluno_em_34ano`). Os códigos de escola, turma e estudante são mascarados pelo próprio INEP, e não há nenhuma informação que permita identificar pessoas.
 
 Recorte: Mato Grosso, escolas públicas, prova de Língua Portuguesa, estudantes presentes, 3ª série do Ensino Médio e 4ª série do Ensino Médio integrado.
 
 ## Como reproduzir no Google Colab
 
 1. No seu Google Drive, crie uma pasta chamada `dissertacao` em "Meu Drive".
-2. Baixe deste repositório o arquivo `saeb2023\_mt\_bruta\_completa.csv` e coloque-o nessa pasta.
+2. Baixe deste repositório o arquivo `saeb2023_mt_bruta_completa.csv` e coloque-o nessa pasta.
 3. Abra os notebooks no Google Colab (em [colab.research.google.com](https://colab.research.google.com), menu **Arquivo → Fazer upload de notebook**).
 4. Execute os notebooks **na ordem**, de 01 a 07. O notebook 01 gera a base analítica que todos os outros usam. Em cada um, use **Ambiente de execução → Executar tudo** e autorize o acesso ao Drive quando o Colab pedir.
 5. As tabelas (planilhas `.xlsx`) e as figuras (`.png`) são salvas na pasta `dissertacao`.
@@ -54,7 +53,7 @@ Para usar outra pasta, altere a linha `PASTA = '/content/drive/MyDrive/dissertac
 
 ## Como citar
 
-\[Referência da dissertação, no formato ABNT]
+BAMBOLIM, Amauri. **Fatores associados à proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso**: uma análise por mineração de dados educacionais com dados do SAEB 2023. 2026. Dissertação (Mestrado em Educação e Novas Tecnologias) – Centro Universitário Internacional Uninter, Curitiba, 2026.
 
 ## Licença
 
