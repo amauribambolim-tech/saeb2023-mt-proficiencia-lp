@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel SAEB 2023 MT</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Proficiência em Língua Portuguesa no Ensino Médio público de Mato Grosso: resultados da análise dos microdados do SAEB 2023.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: cabeçalho com números-chave, navegação fixa por seção e uma sequência de painéis,
+   cada um com gráfico, frase de leitura e notebook de origem. */
+:root {
+  --bg: #f3f5f1;
+  --surface: #ffffff;
+  --ink: #17201d;
+  --muted: #56625d;
+  --faint: #8a958f;
+  --line: #dde3dc;
+  --grid: #e9ede8;
+  --accent: #0f6b5a;      /* verde do cerrado: dado principal */
+  --accent-soft: #cfe5de;
+  --ochre: #b5701a;       /* ocre: abaixo do nível 2, alerta */
+  --ochre-soft: #f3e2c8;
+  --ref: #8f9a95;         /* grupo de referência, valores não significativos */
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;   /* três métodos */
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111614; --surface: #19201d; --ink: #e7ece8; --muted: #a3aea8; --faint: #77837d;
+    --line: #2b3430; --grid: #232b28; --accent: #4fb39b; --accent-soft: #1d3a33;
+    --ochre: #e0a04a; --ochre-soft: #3b2c17; --ref: #7d8984;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111614; --surface: #19201d; --ink: #e7ece8; --muted: #a3aea8; --faint: #77837d;
+  --line: #2b3430; --grid: #232b28; --accent: #4fb39b; --accent-soft: #1d3a33;
+  --ochre: #e0a04a; --ochre-soft: #3b2c17; --ref: #7d8984;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 16px/1.55 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--bg);
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+.num { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* Cabeçalho */
+header.top { padding-block: 40px 28px; }
+.eyebrow {
+  font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+header.top h1 { font-size: clamp(30px, 5.2vw, 50px); line-height: 1.08; margin-top: 10px; max-width: 18ch; }
+header.top .lead { margin-top: 14px; max-width: 62ch; color: var(--muted); font-size: 17px; }
+.kpis {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px;
+}
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.kpi b { display: block; font: 700 clamp(26px, 3.6vw, 34px)/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.kpi span { display: block; margin-top: 6px; font-size: 13.5px; color: var(--muted); line-height: 1.4; }
+.kpi.alert b { color: var(--ochre); }
+
+/* Navegação */
+nav.sec {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(6px); border-bottom: 1px solid var(--line);
+}
+nav.sec .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+nav.sec a {
+  flex: none; text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 600;
+  padding: 6px 12px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap;
+}
+nav.sec a:hover { color: var(--ink); border-color: var(--line); }
+nav.sec a.on { color: var(--accent); background: var(--accent-soft); }
+
+/* Seções */
+main { display: grid; gap: 22px; padding-block: 26px 40px; }
+section.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: clamp(18px, 3vw, 28px); scroll-margin-top: 70px; min-width: 0;
+}
+.panel-head { display: grid; gap: 8px; max-width: 68ch; }
+.panel-head h2 { font-size: clamp(22px, 3vw, 28px); line-height: 1.15; }
+.panel-head p { color: var(--muted); }
+.reading {
+  margin-top: 18px; padding: 12px 14px; border-radius: 8px; background: var(--accent-soft);
+  font-size: 15px; max-width: 75ch;
+}
+.reading strong { color: var(--ink); }
+.source { margin-top: 12px; font-size: 13px; color: var(--faint); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 3px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); }
+.seg button, .chip {
+  font: 600 13.5px/1 var(--body); color: var(--muted); background: transparent; border: 0;
+  padding: 8px 13px; border-radius: 999px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+.seg button:hover { color: var(--ink); }
+select {
+  font: 600 14px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 10px; max-width: 100%;
+}
+label.lbl { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+
+.chart { margin-top: 16px; width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--muted); font-family: var(--body); font-size: 12px; }
+.chart .ink { fill: var(--ink); }
+.chart .strong { fill: var(--ink); font-weight: 700; }
+.chart .gridline { stroke: var(--grid); stroke-width: 1; }
+.chart .axis { stroke: var(--line); stroke-width: 1; }
+.chart .hit { fill: transparent; cursor: default; }
+.chart .hit:focus { outline: none; }
+.chart .row-hl { fill: var(--accent-soft); opacity: 0; transition: opacity .15s; }
+.chart g.row:hover .row-hl, .chart g.row:focus-within .row-hl, .chart g.row.sel .row-hl { opacity: .55; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 13.5px; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+.legend i.dot { border-radius: 50%; }
+
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-top: 8px; }
+.stat-line { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-top: 16px; }
+.stat-line div { min-width: 0; }
+.stat-line b { display: block; font: 700 26px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.stat-line span { font-size: 13.5px; color: var(--muted); }
+.badge {
+  display: inline-block; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+}
+table.mini { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+table.mini th, table.mini td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+table.mini th { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+table.mini td.r, table.mini th.r { text-align: right; }
+.scroll-x { overflow-x: auto; }
+
+/* Bolinhas da resiliência */
+.waffle { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 5px; max-width: 420px; margin-top: 16px; }
+.waffle span { aspect-ratio: 1; border-radius: 50%; background: var(--grid); border: 1.5px solid transparent; max-width: 100%; }
+.waffle span.r { background: var(--accent); }
+.waffle span.e { border-color: var(--ochre); }
+
+/* Dica flutuante */
+#tip {
+  position: fixed; z-index: 20; pointer-events: none; max-width: 280px;
+  background: var(--ink); color: var(--bg); border-radius: 8px; padding: 9px 11px;
+  font-size: 13px; line-height: 1.45; box-shadow: 0 6px 18px rgb(0 0 0 / .18);
+  opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s;
+}
+#tip.on { opacity: 1; transform: none; }
+#tip b { font-weight: 700; }
+
+.nivel-desc {
+  margin-top: 18px; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px;
+  display: grid; gap: 10px;
+}
+.nivel-desc .nd-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.nivel-desc h3 { font-size: 19px; }
+.nivel-desc .nd-range { font-size: 13.5px; color: var(--muted); }
+.nivel-desc .nd-pct { margin-left: auto; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.nivel-desc p { font-size: 14.5px; color: var(--muted); max-width: 75ch; }
+.nivel-desc ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; font-size: 15px; max-width: 80ch; }
+.nivel-desc.n0 { border-color: var(--ochre); background: var(--ochre-soft); }
+.nivel-desc .nd-nav { display: flex; gap: 8px; }
+.nivel-desc .nd-nav button {
+  font: 600 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 12px; cursor: pointer;
+}
+.nivel-desc .nd-nav button:disabled { opacity: .4; cursor: default; }
+footer { padding-block: 10px 48px; color: var(--muted); font-size: 14px; }
+footer .cols { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; }
+footer h3 { font-size: 16px; color: var(--ink); margin-bottom: 8px; }
+footer ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+
+@media (max-width: 760px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .two, footer .cols { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">SAEB 2023 · Língua Portuguesa · 3ª/4ª série do Ensino Médio</div>
+    <h1>Quem lê bem ao sair do Ensino Médio público de Mato Grosso</h1>
+    <p class="lead">Resultados da análise dos microdados do SAEB 2023 para os estudantes das escolas públicas do estado: como a proficiência se distribui, como varia entre grupos e quais características dos estudantes mais se associam a ela.</p>
+    <div class="kpis">
+      <div class="kpi"><b>22.996</b><span>estudantes na base analítica, de 408 escolas</span></div>
+      <div class="kpi"><b>269,5</b><span>pontos de proficiência média na escala do SAEB</span></div>
+      <div class="kpi alert"><b>35,3%</b><span>abaixo de 250 pontos (níveis 0 e 1 da escala)</span></div>
+      <div class="kpi"><b>18,5%</b><span>dos estudantes de menor nível socioeconômico estão no quartil superior de proficiência</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="sec" aria-label="Seções do painel">
+  <div class="wrap">
+    <a href="#niveis">Níveis</a>
+    <a href="#grupos">Grupos</a>
+    <a href="#mesmas-condicoes">Mesmas condições</a>
+    <a href="#fatores">Fatores associados</a>
+    <a href="#metodos">Três métodos</a>
+    <a href="#resiliencia">Resiliência</a>
+    <a href="#indigenas">Estudantes indígenas</a>
+    <a href="#sobre">Sobre os dados</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="panel" id="niveis">
+    <div class="panel-head">
+      <span class="eyebrow">1 · Escala de proficiência</span>
+      <h2>Em que nível da escala os estudantes estão</h2>
+      <p>O INEP divide a escala de Língua Portuguesa da série final do Ensino Médio em níveis de 25 pontos. Abaixo de 225 pontos está o nível 0. Escolha um grupo para comparar a sua distribuição com a de todos os estudantes e clique numa barra para ver o que os estudantes daquele nível provavelmente são capazes de fazer.</p>
+    </div>
+    <div class="controls">
+      <label class="lbl" for="selNivel">Grupo</label>
+      <select id="selNivel"></select>
+    </div>
+    <div class="stat-line" id="nivelStats"></div>
+    <div class="chart" id="chNiveis"></div>
+    <div class="legend">
+      <span><i style="background:var(--ochre)"></i>Níveis 0 e 1 (abaixo de 250 pontos)</span>
+      <span><i style="background:var(--accent)"></i>Nível 2 em diante</span>
+      <span><i style="background:transparent;border:2px solid var(--ink)"></i>Todos os estudantes (para comparação)</span>
+    </div>
+    <div class="nivel-desc" id="nivelDesc" aria-live="polite"></div>
+    <p class="reading" id="nivelReading"></p>
+    <p class="source">Fonte: Notebook 07, seção 1. Percentuais sobre os estudantes de cada grupo. Descrição dos níveis: INEP. Escalas de Proficiência do Saeb, Quadro 5 (Brasília: Inep/MEC, 2020).</p>
+  </section>
+
+  <section class="panel" id="grupos">
+    <div class="panel-head">
+      <span class="eyebrow">2 · Comparações entre grupos</span>
+      <h2>Proficiência média por grupo de estudantes</h2>
+      <p>Cada ponto é a média do grupo, em pontos da escala do SAEB. A linha tracejada marca a média geral (269,5). Passe o mouse ou toque num ponto para ver o número de estudantes e a diferença em relação ao grupo de referência.</p>
+    </div>
+    <div class="controls"><div class="seg" id="segGrupos" role="group" aria-label="Variável"></div></div>
+    <div class="chart" id="chGrupos"></div>
+    <p class="reading" id="grupoReading"></p>
+    <p class="source" id="grupoSource"></p>
+  </section>
+
+  <section class="panel" id="mesmas-condicoes">
+    <div class="panel-head">
+      <span class="eyebrow">3 · Diferença bruta e diferença em mesmas condições</span>
+      <h2>Quanto da diferença permanece entre estudantes em condições semelhantes</h2>
+      <p>A barra clara é a diferença simples entre as médias. A barra escura é a diferença estimada pela regressão, comparando estudantes com as mesmas demais características: escolaridade dos pais, recursos do domicílio, trajetória escolar, uso do tempo e outras. O traço indica o intervalo de confiança de 95%.</p>
+    </div>
+    <div class="chart" id="chAjuste"></div>
+    <div class="legend">
+      <span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Diferença bruta</span>
+      <span><i style="background:var(--accent)"></i>Diferença em mesmas condições (regressão)</span>
+      <span><i style="background:var(--ref)"></i>Não significativa (p ≥ 0,05)</span>
+    </div>
+    <p class="reading"><strong>Como ler:</strong> a diferença dos estudantes indígenas cai de 44,4 para 27,3 pontos quando se comparam estudantes com as mesmas demais características. Cerca de 38,5% da diferença está associada a essas condições; os 27,3 pontos restantes não são captados pelas variáveis do questionário. Entre os que pretendem estudar e trabalhar, a diferença desaparece.</p>
+    <p class="source">Fonte: Notebook 02 (diferenças brutas) e Notebook 03, seção 3 (regressão com erros-padrão agrupados por escola, distribuição t com 407 graus de liberdade).</p>
+  </section>
+
+  <section class="panel" id="fatores">
+    <div class="panel-head">
+      <span class="eyebrow">4 · Regressão linear múltipla</span>
+      <h2>Fatores associados à proficiência</h2>
+      <p>Diferença de proficiência, em pontos do SAEB, associada a cada atributo quando todos são considerados juntos. Nas variáveis em escala (0 a 3, 1 a 5), o valor corresponde a cada passo da escala; nas categorias, à diferença em relação à referência. Como as escalas são diferentes, os tamanhos não devem ser comparados diretamente entre si.</p>
+    </div>
+    <div class="controls"><div class="seg" id="segFatores" role="group" aria-label="Grupo temático"></div></div>
+    <div class="chart" id="chFatores"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--accent)"></i>Associação positiva (p &lt; 0,05)</span>
+      <span><i class="dot" style="background:var(--ochre)"></i>Associação negativa (p &lt; 0,05)</span>
+      <span><i class="dot" style="background:var(--ref)"></i>Não significativa</span>
+    </div>
+    <p class="reading"><strong>Achado que chama atenção:</strong> quem <em>discorda</em> da frase “Eu me sinto motivado(a), no dia a dia, a usar o que foi ensinado” (Q23b) tem proficiência mais alta: 11,2 pontos a cada passo da escala. O padrão não se explica por estilo de resposta (Notebook 06) Uma hipótese é um olhar mais crítico dos estudantes com melhor leitura sobre o que a escola ensina.</p>
+    <p class="source">Fonte: Notebook 03, seção 3. N = 22.996; R² = 0,209. Coeficientes convertidos para pontos SAEB (× 55,093).</p>
+  </section>
+
+  <section class="panel" id="metodos">
+    <div class="panel-head">
+      <span class="eyebrow">5 · Mineração de dados</span>
+      <h2>O que três métodos diferentes apontam como mais relevante</h2>
+      <p>Regressão linear, RReliefF e Random Forest ordenaram os mesmos 20 atributos. Quanto mais à esquerda, mais relevante. Quando os três símbolos ficam próximos, os métodos concordam. Clique num atributo para destacá-lo.</p>
+    </div>
+    <div class="chart" id="chMetodos"></div>
+    <div class="legend">
+      <span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="var(--s1)"/></svg> Regressão</span>
+      <span><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="1.5" fill="var(--s2)"/></svg> RReliefF</span>
+      <span><svg width="14" height="14" aria-hidden="true"><path d="M7 1.5 L12.5 12 L1.5 12 Z" fill="var(--s3)"/></svg> Random Forest</span>
+      <span><span class="badge">convergente</span> relevante nos três e entre os 5 primeiros em pelo menos dois</span>
+    </div>
+    <div class="two">
+      <div>
+        <h3 style="font-size:17px;margin-top:20px">Concordância entre os rankings</h3>
+        <div class="scroll-x">
+        <table class="mini" style="margin-top:8px">
+          <thead><tr><th>Medida</th><th class="r">Valor</th></tr></thead>
+          <tbody>
+            <tr><td>Regressão × Random Forest (Spearman)</td><td class="r">0,916</td></tr>
+            <tr><td>RReliefF × Random Forest (Spearman)</td><td class="r">0,716</td></tr>
+            <tr><td>Regressão × RReliefF (Spearman)</td><td class="r">0,638</td></tr>
+            <tr><td>W de Kendall (três métodos)</td><td class="r">0,838</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:17px;margin-top:20px">Desempenho em escolas não usadas no ajuste</h3>
+        <div class="scroll-x">
+        <table class="mini" style="margin-top:8px">
+          <thead><tr><th>Modelo</th><th class="r">R²</th><th class="r">RMSE (pontos)</th></tr></thead>
+          <tbody>
+            <tr><td>Regressão linear</td><td class="r">0,199</td><td class="r">44,9</td></tr>
+            <tr><td>Random Forest</td><td class="r">0,204</td><td class="r">44,7</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <p class="reading"><strong>Como ler:</strong> a motivação para usar o que foi ensinado (Q23b), a pretensão futura e o tempo de estudos ficaram entre os três primeiros nos três métodos. Raça/cor é o caso de maior divergência: 4º na regressão e 18º no RReliefF. Grupos pequenos, como os estudantes indígenas, pesam pouco nos métodos que medem relevância para o conjunto, mesmo quando a desigualdade é grande.</p>
+    <p class="source">Fonte: Notebook 04, seções 2 a 6. Partição por escola: 17.911 estudantes de 326 escolas no treino e 5.085 de 82 escolas no teste.</p>
+  </section>
+
+  <section class="panel" id="resiliencia">
+    <div class="panel-head">
+      <span class="eyebrow">6 · Resiliência acadêmica</span>
+      <h2>Estudantes que superam a desvantagem de origem</h2>
+      <p>Desfavorecidos são os 25% de menor nível socioeconômico (INSE). Resilientes são os desfavorecidos que estão entre os 25% de maior proficiência. Se a origem não pesasse, 25 de cada 100 desfavorecidos estariam nesse grupo.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="stat-line">
+          <div><b>18,5%</b><span>taxa observada (IC 95%: 17,1 a 19,7)</span></div>
+          <div><b>25,0%</b><span>esperado sem relação com a origem</span></div>
+        </div>
+        <div class="waffle" id="waffle" role="img" aria-label="De cada 100 estudantes desfavorecidos, cerca de 18 são resilientes; seriam 25 se a origem socioeconômica não pesasse."></div>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--accent)"></i>Resilientes (≈ 18 de 100)</span>
+          <span><i class="dot" style="background:transparent;border:1.5px solid var(--ochre)"></i>Faltam para chegar aos 25 esperados</span>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:17px;margin-top:16px">Taxa de resiliência por grupo</h3>
+        <div class="chart" id="chResil"></div>
+      </div>
+    </div>
+    <p class="reading"><strong>Como ler:</strong> entre os estudantes de menor nível socioeconômico, 1.073 de 5.804 chegaram ao quartil superior de proficiência. A taxa dos brancos (24,2%) fica perto do esperado; a dos indígenas, 5 de 108 estudantes, é de 4,6%. Os resilientes estudam mais fora da escola, reprovaram menos e raramente pretendem somente trabalhar (4,1% contra 11,5% dos demais desfavorecidos).</p>
+    <p class="source">Fonte: Notebook 05. Intervalos de 95% pelo método de Wilson; a linha tracejada marca os 25% esperados.</p>
+  </section>
+
+  <section class="panel" id="indigenas">
+    <div class="panel-head">
+      <span class="eyebrow">7 · Em foco</span>
+      <h2>Os estudantes indígenas</h2>
+      <p>São 249 estudantes, 1,1% da base, com a maior diferença de proficiência entre os grupos raciais. O gráfico mostra como a diferença em relação aos estudantes brancos muda conforme o que é levado em conta.</p>
+    </div>
+    <div class="chart" id="chIndig"></div>
+    <div class="stat-line">
+      <div><b>222 × 241</b><span>pontos: língua de casa diferente do português (34 estudantes) × português (210)</span></div>
+      <div><b>88%</b><span>da diferença bruta ocorre entre colegas da mesma escola</span></div>
+      <div><b>25,3</b><span>pontos de erro de medida médio da prova, contra 22,9 na base inteira</span></div>
+    </div>
+    <p class="reading"><strong>Como ler:</strong> as condições observadas no questionário respondem por parte da diferença, e a língua falada em casa por um pouco mais. A diferença continua grande mesmo entre colegas da mesma escola. Os grupos são pequenos e os resultados sobre a língua são exploratórios, mas indicam fatores que o SAEB não mede, como a trajetória escolar e a adequação da prova a estudantes bilíngues.</p>
+    <p class="source">Fonte: Notebook 07, seções 2 e 3; Notebook 03, seção 9 (erro de medida da TRI).</p>
+  </section>
+
+</main>
+
+<footer class="wrap" id="sobre">
+  <div class="cols">
+    <div>
+      <h3>Sobre os dados</h3>
+      <ul>
+        <li>Microdados do SAEB 2023 (INEP), obtidos pela Base dos Dados. Estudantes da 3ª/4ª série do Ensino Médio tradicional e integrado das escolas públicas de Mato Grosso que fizeram a prova de Língua Portuguesa.</li>
+        <li>Foram excluídos 1.468 estudantes sem proficiência calculada ou sem resposta válida sobre sexo, raça/cor ou pretensão futura.</li>
+        <li>Os resultados descrevem <strong>associações</strong>. Os dados são observacionais e de um único ano; não permitem afirmar que um atributo causa a diferença de desempenho.</li>
+        <li>O código da escola é mascarado nos microdados, por isso não há resultados por escola ou por município.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Reprodução</h3>
+      <ul>
+        <li>Todos os números deste painel vêm dos notebooks do repositório, indicados abaixo de cada seção.</li>
+        <li><a href="https://github.com/amauribambolim-tech/saeb2023-mt-proficiencia-lp" target="_blank" rel="noopener">github.com/amauribambolim-tech/saeb2023-mt-proficiencia-lp</a></li>
+        <li>Amauri Bambolim. Dissertação de mestrado, Programa de Pós-Graduação em Educação e Novas Tecnologias (UNINTER).</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const br = (v, d = 1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const sgn = (v, d = 1) => (v > 0 ? '+' : v < 0 ? '−' : '') + br(Math.abs(v), d);
+  const intBR = v => v.toLocaleString('pt-BR');
+
+  function el(tag, attrs = {}, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(parent, x, y, s, attrs = {}) {
+    const t = el('text', { x, y, ...attrs }, parent); t.textContent = s; return t;
+  }
+  function svgIn(container, w, h, label) {
+    container.innerHTML = '';
+    const s = el('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': label });
+    container.appendChild(s);
+    return s;
+  }
+  const widthOf = c => Math.max(300, Math.min(1020, c.clientWidth || 640));
+
+  /* Dica flutuante */
+  const tip = document.getElementById('tip');
+  function showTip(html, ev, anchor) {
+    tip.innerHTML = html; tip.classList.add('on');
+    let x, y;
+    if (ev && ev.clientX != null) { x = ev.clientX; y = ev.clientY; }
+    else { const r = anchor.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top; }
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = x + 14, top = y - th - 12;
+    if (left + tw > window.innerWidth - 8) left = x - tw - 14;
+    if (left < 8) left = 8;
+    if (top < 8) top = y + 16;
+    tip.style.left = left + 'px'; tip.style.top = top + 'px';
+  }
+  const hideTip = () => tip.classList.remove('on');
+  function bindTip(node, html) {
+    node.setAttribute('tabindex', '0');
+    node.addEventListener('pointermove', e => showTip(html, e));
+    node.addEventListener('pointerleave', hideTip);
+    node.addEventListener('focus', () => showTip(html, null, node));
+    node.addEventListener('blur', hideTip);
+  }
+
+  /* ---------- 1. Níveis ---------- */
+  const NIVEIS = {
+    'Todos os estudantes': { n: 22996, d: [21.3, 14.0, 16.7, 18.2, 15.5, 9.6, 3.8, 0.9, 0.1] },
+    'Raça/cor: branca': { n: 7039, d: [15.3, 11.9, 14.8, 18.8, 18.6, 13.1, 5.9, 1.5, 0.1] },
+    'Raça/cor: parda': { n: 11962, d: [22.5, 14.2, 17.8, 18.5, 14.9, 8.4, 3.0, 0.6, 0.0] },
+    'Raça/cor: preta': { n: 3234, d: [27.2, 17.2, 16.6, 16.3, 12.3, 7.3, 2.6, 0.4, 0.0] },
+    'Raça/cor: amarela': { n: 512, d: [26.0, 17.4, 15.6, 19.3, 13.3, 6.2, 1.8, 0.4, 0.0] },
+    'Raça/cor: indígena': { n: 249, d: [44.6, 17.3, 17.3, 12.4, 4.8, 2.0, 1.6, 0.0, 0.0] },
+    'Sexo: feminino': { n: 12669, d: [16.6, 13.1, 17.3, 20.2, 17.2, 10.6, 3.9, 1.0, 0.1] },
+    'Sexo: masculino': { n: 10327, d: [27.0, 15.1, 15.9, 15.8, 13.5, 8.3, 3.6, 0.7, 0.1] },
+    'Pretensão: somente estudar': { n: 1570, d: [19.9, 9.9, 13.9, 16.4, 15.4, 15.5, 6.6, 2.3, 0.1] },
+    'Pretensão: estudar e trabalhar': { n: 17212, d: [17.5, 13.5, 16.7, 19.8, 17.2, 10.4, 4.1, 0.8, 0.1] },
+    'Pretensão: ainda não sabe': { n: 2303, d: [32.0, 17.0, 17.8, 14.1, 11.2, 5.4, 1.8, 0.7, 0.0] },
+    'Pretensão: somente trabalhar': { n: 1911, d: [44.0, 18.7, 16.8, 10.5, 6.4, 2.4, 1.0, 0.1, 0.0] },
+  };
+  const FAIXAS = ['abaixo de 225', '225 a 250', '250 a 275', '275 a 300', '300 a 325', '325 a 350', '350 a 375', '375 a 400', '400 ou mais'];
+  /* Descrição dos níveis: INEP, Escalas de Proficiência do Saeb (2020), Quadro 5, transcrição literal */
+  const HAB = [
+    null,
+    ['Identificar elementos da narrativa em história em quadrinhos.',
+     'Reconhecer a finalidade de recurso gráfico em artigos.',
+     'Reconhecer a relação de causa e consequência em lendas.',
+     'Inferir o sentido de palavra em letras de música e reportagens.'],
+    ['Reconhecer a ideia comum entre textos de gêneros diferentes e a ironia em tirinhas.',
+     'Reconhecer relações de sentido estabelecidas por conjunções ou locuções conjuntivas em letras de música e crônicas.',
+     'Reconhecer o uso de expressões características da linguagem (científica, profissional etc.) e a relação entre pronome e seu referente em artigos e reportagens.',
+     'Inferir o efeito de sentido da linguagem verbal e não verbal em notícias e charges.'],
+    ['Localizar informação explícita em artigos de opinião.',
+     'Identificar a finalidade de relatórios científicos.',
+     'Reconhecer relações de sentido marcadas por conjunções, a relação de causa e consequência e a relação entre o pronome e seu referente em fragmentos de romances.',
+     'Reconhecer o tema de uma crônica.',
+     'Reconhecer variantes linguísticas em artigos.',
+     'Reconhecer o sentido e o efeito de sentido produzido pelo uso de recursos morfossintáticos em contos, artigos e crônicas.',
+     'Reconhecer opiniões divergentes sobre o mesmo tema em diferentes textos.',
+     'Inferir informação, o sentido e o efeito de sentido produzido por expressão em reportagens e tirinhas.'],
+    ['Localizar informações explícitas em infográficos, reportagens, crônicas e artigos.',
+     'Identificar o argumento em contos.',
+     'Identificar a finalidade e a informação principal em notícias.',
+     'Reconhecer a relação entre os pronomes e seus referentes em contos.',
+     'Reconhecer elementos da narrativa em contos.',
+     'Reconhecer variantes linguísticas em contos, notícias e reportagens.',
+     'Reconhecer o efeito de sentido produzido pelo uso de recursos morfossintáticos em poemas.',
+     'Reconhecer ideia comum e opiniões divergentes sobre o mesmo tema na comparação entre diferentes textos.',
+     'Reconhecer ironia e efeito de humor em crônicas e entrevistas.',
+     'Reconhecer a relação de causa e consequência em piadas e fragmentos de romance.',
+     'Comparar poemas que abordem o mesmo tema.',
+     'Diferenciar fato de opinião em contos, artigos e reportagens.',
+     'Diferenciar tese de argumentos em artigos, entrevistas e crônicas.',
+     'Inferir informação, sentido de expressão e o efeito de sentido decorrente do uso de recursos morfossintáticos em crônicas.',
+     'Inferir o sentido decorrente do uso de recursos gráficos em poemas.',
+     'Inferir o efeito de sentido da linguagem verbal e não verbal e o efeito de humor em tirinhas.'],
+    ['Localizar informação explícita em resumos.',
+     'Identificar a informação principal em reportagens.',
+     'Identificar elementos da narrativa e a relação entre argumento e ideia central em crônicas.',
+     'Reconhecer a finalidade de propagandas.',
+     'Reconhecer variantes linguísticas e o efeito de sentido de recursos gráficos em crônicas e artigos.',
+     'Reconhecer a relação de causa e consequência e relações de sentido marcadas por conjunções em reportagens, artigos e ensaios.',
+     'Reconhecer o tema em poemas.',
+     'Diferenciar fato de opinião em resenhas.',
+     'Inferir o sentido de palavras e expressões em piadas e letras de música.',
+     'Inferir informação em artigos; inferir o sentido de expressão em fragmentos de romances.'],
+    ['Reconhecer efeitos estilísticos em poemas.',
+     'Reconhecer ironia e efeitos de sentido decorrentes da repetição de palavras em sinopses.',
+     'Reconhecer opiniões distintas sobre o mesmo tema, na comparação entre diferentes textos.',
+     'Reconhecer finalidade e traços de humor em reportagens.',
+     'Reconhecer o efeito de sentido do humor em tirinhas.',
+     'Reconhecer o tema em contos e fragmentos de romances.',
+     'Reconhecer relação de sentido marcada por conjunção em crônicas.',
+     'Inferir informação e tema em reportagens, poemas, histórias em quadrinhos e tirinhas.',
+     'Inferir o sentido e o efeito de sentido de palavras ou de expressão em poemas, crônicas e fragmentos de romances.'],
+    ['Identificar a ideia central e o argumento em apresentações de livros, reportagens, editoriais e crônicas.',
+     'Identificar elementos da narrativa em crônicas, contos e fragmentos de romances.',
+     'Identificar ironia e tema em poemas e artigos.',
+     'Reconhecer relações de sentido marcadas por conjunção em artigos, reportagens e fragmentos de romances.',
+     'Reconhecer a relação de causa e consequência em reportagens e fragmentos de romances.',
+     'Reconhecer o efeito de sentido de recursos gráficos em artigos.',
+     'Reconhecer variantes linguísticas em letras de música e piadas.',
+     'Reconhecer a finalidade de reportagens, resenhas e artigos.',
+     'Inferir efeito de humor e ironia em tirinhas e charges.'],
+    ['Reconhecer o efeito de sentido resultante do uso de recursos morfossintáticos em artigos e letras de música.'],
+  ];
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  let nivelSel = 2;
+  function drawDesc() {
+    const box = document.getElementById('nivelDesc'), i = nivelSel;
+    const key = selNivel.value, pct = NIVEIS[key].d[i];
+    box.className = 'nivel-desc' + (i === 0 ? ' n0' : '');
+    let corpo;
+    if (i === 0) {
+      corpo = `<p>O Saeb não utilizou itens da 3ª série do Ensino Médio que avaliam as habilidades do nível 0. Segundo o INEP, os estudantes com desempenho menor que 225 “requerem atenção especial, pois ainda não demonstram habilidades muito elementares que deveriam apresentar nessa etapa escolar”.</p>`;
+    } else {
+      corpo = `<p>${i > 1 ? 'Além das habilidades dos níveis anteriores, os' : 'Os'} estudantes provavelmente são capazes de:</p>
+        <ul>${HAB[i].map(h => `<li>${esc(h)}</li>`).join('')}</ul>`;
+    }
+    box.innerHTML = `<div class="nd-head"><h3>Nível ${i}</h3><span class="nd-range">${FAIXAS[i]} pontos</span>
+        <span class="nd-pct">${esc(key)}: ${br(pct)}% neste nível</span></div>${corpo}
+      <div class="nd-nav"><button type="button" id="ndPrev" ${i === 0 ? 'disabled' : ''}>← Nível ${Math.max(0, i - 1)}</button>
+        <button type="button" id="ndNext" ${i === 8 ? 'disabled' : ''}>Nível ${Math.min(8, i + 1)} →</button></div>`;
+    document.getElementById('ndPrev').onclick = () => { if (nivelSel > 0) { nivelSel--; drawNiveis(); } };
+    document.getElementById('ndNext').onclick = () => { if (nivelSel < 8) { nivelSel++; drawNiveis(); } };
+  }
+
+  const selNivel = document.getElementById('selNivel');
+  Object.keys(NIVEIS).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; selNivel.appendChild(o); });
+  try { const s = localStorage.getItem('painel-nivel'); if (s && NIVEIS[s]) selNivel.value = s; } catch (e) {}
+
+  function drawNiveis() {
+    const c = document.getElementById('chNiveis');
+    const key = selNivel.value, g = NIVEIS[key], all = NIVEIS['Todos os estudantes'].d;
+    const W = widthOf(c), H = 290, m = { t: 22, r: 8, b: 46, l: 36 };
+    const s = svgIn(c, W, H, `Distribuição nos níveis de proficiência: ${key}`);
+    const iw = W - m.l - m.r, ih = H - m.t - m.b, max = 50;
+    const y = v => m.t + ih - (v / max) * ih;
+    for (let v = 0; v <= max; v += 10) {
+      el('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: 'gridline' }, s);
+      txt(s, m.l - 8, y(v) + 4, v + '%', { 'text-anchor': 'end' });
+    }
+    const bw = iw / 9, pad = Math.max(3, bw * 0.18);
+    g.d.forEach((v, i) => {
+      const x = m.l + i * bw + pad, w = bw - 2 * pad, h = y(0) - y(v);
+      const grp = el('g', {}, s);
+      const r = Math.min(4, w / 2, h);
+      if (v > 0) el('path', {
+        d: `M${x},${y(0)} V${y(v) + r} Q${x},${y(v)} ${x + r},${y(v)} H${x + w - r} Q${x + w},${y(v)} ${x + w},${y(v) + r} V${y(0)} Z`,
+        fill: i < 2 ? 'var(--ochre)' : 'var(--accent)'
+      }, grp);
+      if (key !== 'Todos os estudantes') {
+        el('line', { x1: x - 2, x2: x + w + 2, y1: y(all[i]), y2: y(all[i]), stroke: 'var(--ink)', 'stroke-width': 2 }, grp);
+      }
+      txt(grp, x + w / 2, y(v) - 6, br(v), { 'text-anchor': 'middle', class: 'ink', 'font-size': bw < 44 ? 10 : 12 });
+      txt(grp, x + w / 2, y(0) + 17, 'Nível ' + i, { 'text-anchor': 'middle', 'font-size': bw < 44 ? 10 : 12 });
+      if (bw > 70) txt(grp, x + w / 2, y(0) + 32, FAIXAS[i], { 'text-anchor': 'middle', 'font-size': 11 });
+      if (i === nivelSel) el('rect', { x: m.l + i * bw + 1, y: m.t - 14, width: bw - 2, height: ih + 14 + 22, rx: 6, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 1.5, 'stroke-dasharray': '3 3' }, grp);
+      const hit = el('rect', { x: m.l + i * bw, y: m.t, width: bw, height: ih + 20, class: 'hit', style: 'cursor:pointer', 'aria-label': `Nível ${i}: ${br(v)}%` }, grp);
+      bindTip(hit, `<b>Nível ${i}</b> (${FAIXAS[i]} pontos)<br>${key}: <b>${br(v)}%</b><br>Todos os estudantes: ${br(all[i])}%<br>Clique para ver as habilidades`);
+      const escolher = () => { nivelSel = i; drawNiveis(); const h = document.querySelectorAll('#chNiveis .hit')[i]; if (h) h.focus(); };
+      hit.addEventListener('click', escolher);
+      hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); escolher(); } });
+    });
+    drawDesc();
+    el('line', { x1: m.l, x2: W - m.r, y1: y(0), y2: y(0), class: 'axis' }, s);
+
+    const abaixo = g.d[0] + g.d[1], abaixoAll = all[0] + all[1];
+    const acima300 = g.d.slice(4).reduce((a, b) => a + b, 0);
+    document.getElementById('nivelStats').innerHTML =
+      `<div><b>${intBR(g.n)}</b><span>estudantes no grupo</span></div>
+       <div><b style="color:var(--ochre)">${br(abaixo)}%</b><span>abaixo de 250 pontos</span></div>
+       <div><b>${br(g.d[0])}%</b><span>no nível 0 (abaixo de 225)</span></div>
+       <div><b>${br(acima300)}%</b><span>com 300 pontos ou mais</span></div>`;
+    const rd = document.getElementById('nivelReading');
+    if (key === 'Todos os estudantes') {
+      rd.innerHTML = `<strong>Como ler:</strong> pouco mais de um em cada cinco estudantes (21,3%) está no nível 0, e 35,3% estão abaixo de 250 pontos. A média da base (269,5) fica no nível 2. Habilidades descritas a partir do nível 3, como localizar informação explícita em artigos de opinião e reconhecer o tema de uma crônica, ficam acima da média dos estudantes.`;
+    } else {
+      const dif = abaixo - abaixoAll;
+      rd.innerHTML = `<strong>Como ler:</strong> ${br(abaixo)}% dos estudantes deste grupo estão abaixo de 250 pontos, ${dif >= 0 ? br(dif) + ' pontos percentuais acima' : br(-dif) + ' pontos percentuais abaixo'} do total (35,3%). O traço preto em cada barra mostra o percentual de todos os estudantes naquele nível.`;
+    }
+  }
+  selNivel.addEventListener('change', () => { try { localStorage.setItem('painel-nivel', selNivel.value); } catch (e) {} drawNiveis(); });
+
+  /* ---------- 2. Grupos ---------- */
+  const GRUPOS = {
+    'Raça/cor': { fonte: 'Notebook 02, Figura 5 (Q5). Teste conjunto de Wald: p < 0,001; eta² = 0,030.', ler: 'Os estudantes brancos têm a maior média (281,2). Os indígenas ficam 44,4 pontos abaixo, quase dois níveis da escala.',
+      itens: [['Branca', 7039, 281.2, null], ['Parda', 11962, 266.6, -14.7], ['Preta', 3234, 259.2, -22.1], ['Amarela', 512, 258.8, -22.5], ['Indígena', 249, 236.8, -44.4]] },
+    'Sexo': { fonte: 'Notebook 02, Figura 6 (Q7). Os 202 estudantes que não declararam o sexo não fazem parte da base analítica e aparecem como grupo complementar.', ler: 'As estudantes têm média 13,5 pontos maior que os estudantes (d de Cohen = 0,27). Os que preferiram não declarar o sexo ficam entre os dois grupos.',
+      itens: [['Masculino', 10327, 262.1, null], ['Feminino', 12669, 275.6, 13.5], ['Não declarado (complementar)', 202, 271.2, 9.1]] },
+    'Pretensão futura': { fonte: 'Notebook 02, Figura 7 (Q9). Teste conjunto de Wald: χ² = 1.157,6 com 3 graus de liberdade; p < 0,001; eta² = 0,055.', ler: 'Quem pretende somente trabalhar após o Ensino Médio tem média 43,1 pontos menor que quem pretende somente estudar. Três em cada quatro estudantes pretendem estudar e trabalhar.',
+      itens: [['Somente estudar', 1570, 280.0, null], ['Estudar e trabalhar', 17212, 274.4, -5.7], ['Ainda não sabe', 2303, 253.1, -27.0], ['Somente trabalhar', 1911, 237.0, -43.1]] },
+    'Escolaridade dos pais': { fonte: 'Notebook 02, Tabela 4 (Q10). Diferenças em relação aos que informaram a escolaridade; todas com p < 0,001.', ler: 'Não saber a escolaridade da mãe (12,1% dos estudantes) está associado a 22,4 pontos a menos. Sobre o pai, o desconhecimento é quase o dobro (23,5%).',
+      itens: [['Mãe: informou', 19997, 272.5, null], ['Mãe: não sabe', 2773, 250.1, -22.4], ['Mãe: sem resposta', 226, 243.5, -29.0], ['Pai: informou', 17363, 273.4, null], ['Pai: não sabe', 5398, 258.3, -15.0], ['Pai: sem resposta', 235, 241.9, -31.5]] },
+    'Convivência': { fonte: 'Notebook 02, Tabela 5 (Q11). Diferença entre “mora” e “não mora”; p < 0,001 para mãe e pai.', ler: 'Morar com a mãe está associado a 9,0 pontos a mais; com o pai, a 4,1. Na regressão, a diferença do pai desaparece quando se considera a convivência com a mãe.',
+      itens: [['Mãe: não mora', 3153, 263.3, null], ['Mãe: mora', 18379, 272.3, 9.0], ['Mãe: sem resposta', 1464, 248.3, null], ['Pai: não mora', 5479, 268.4, null], ['Pai: mora', 15226, 272.5, 4.1], ['Pai: sem resposta', 2291, 252.2, null]] },
+    'Nível socioeconômico': { fonte: 'Notebook 05, seção 2. Diferença favorecidos − desfavorecidos: 16,6 pontos (IC 95%: 13,8 a 19,4; d de Cohen = 0,33).', ler: 'Os 25% de maior nível socioeconômico (INSE) têm 16,6 pontos a mais que os 25% de menor nível.',
+      itens: [['25% de menor INSE', 5804, 260.4, null], ['Intermediários', 11389, 270.4, null], ['25% de maior INSE', 5803, 276.9, 16.6]] },
+    'Modalidade': { fonte: 'Notebook 02 (Q-EMI). Diferença: 28,9 pontos; p < 0,001. São 18 escolas de Ensino Médio integrado, contra 390 do tradicional.', ler: 'O Ensino Médio integrado tem média 28,9 pontos maior. Parte dessa diferença pode vir da seleção de quem ingressa nessas escolas; por isso a modalidade entra nos modelos como controle.',
+      itens: [['Tradicional', 21711, 267.9, null], ['Integrado', 1285, 296.9, 28.9]] },
+  };
+  const segG = document.getElementById('segGrupos');
+  let grupoAtual = 'Raça/cor';
+  Object.keys(GRUPOS).forEach(k => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = k; b.id = 'g-' + k.replace(/\W+/g, '');
+    b.setAttribute('aria-pressed', k === grupoAtual); b.onclick = () => { grupoAtual = k; [...segG.children].forEach(x => x.setAttribute('aria-pressed', x === b)); drawGrupos(); };
+    segG.appendChild(b);
+  });
+  function drawGrupos() {
+    const c = document.getElementById('chGrupos'), G = GRUPOS[grupoAtual], itens = G.itens;
+    const W = widthOf(c), rowH = 40, m = { t: 26, r: 24, b: 30, l: Math.min(230, W * 0.38) };
+    const H = m.t + m.b + itens.length * rowH;
+    const s = svgIn(c, W, H, `Proficiência média por ${grupoAtual}`);
+    const lo = 230, hi = 300, x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+    for (let v = lo; v <= hi; v += 10) {
+      el('line', { x1: x(v), x2: x(v), y1: m.t - 6, y2: H - m.b, class: 'gridline' }, s);
+      txt(s, x(v), H - m.b + 18, v, { 'text-anchor': 'middle' });
+    }
+    el('line', { x1: x(269.5), x2: x(269.5), y1: m.t - 14, y2: H - m.b, stroke: 'var(--ink)', 'stroke-dasharray': '4 4', 'stroke-width': 1.2 }, s);
+    txt(s, x(269.5) + 5, m.t - 8, 'média geral 269,5', { class: 'ink', 'font-size': 11.5 });
+    itens.forEach(([nome, n, med, dif], i) => {
+      const cy = m.t + i * rowH + rowH / 2;
+      const row = el('g', { class: 'row' }, s);
+      el('rect', { x: 0, y: cy - rowH / 2 + 2, width: W, height: rowH - 4, rx: 6, class: 'row-hl' }, row);
+      txt(row, m.l - 12, cy + 4, nome, { 'text-anchor': 'end', class: 'ink', 'font-size': W < 480 ? 11.5 : 13 });
+      el('line', { x1: x(lo), x2: x(med), y1: cy, y2: cy, stroke: 'var(--line)', 'stroke-width': 2 }, row);
+      const isRef = dif === null;
+      el('circle', { cx: x(med), cy, r: 7, fill: isRef ? 'var(--ref)' : (med < 269.5 ? 'var(--ochre)' : 'var(--accent)'), stroke: 'var(--surface)', 'stroke-width': 2 }, row);
+      txt(row, x(med) + 12, cy + 4, br(med), { class: 'strong', 'font-size': 12.5 });
+      const hit = el('rect', { x: 0, y: cy - rowH / 2, width: W, height: rowH, class: 'hit' }, row);
+      bindTip(hit, `<b>${nome}</b><br>${intBR(n)} estudantes<br>Média: <b>${br(med)}</b> pontos` + (dif !== null ? `<br>Diferença: ${sgn(dif)} pontos` : ''));
+    });
+    document.getElementById('grupoReading').innerHTML = '<strong>Como ler:</strong> ' + G.ler;
+    document.getElementById('grupoSource').textContent = 'Fonte: ' + G.fonte;
+  }
+
+  /* ---------- 3. Bruta x mesmas condições ---------- */
+  const AJUSTE = [
+    ['Raça/cor (ref.: branca)', [['Parda', -14.7, -8.9, -10.3, -7.5, true], ['Preta', -22.1, -12.6, -14.5, -10.6, true], ['Amarela', -22.5, -13.5, -17.5, -9.4, true], ['Indígena', -44.4, -27.3, -33.5, -21.2, true]]],
+    ['Sexo (ref.: masculino)', [['Feminino', 13.5, 7.1, 5.7, 8.5, true]]],
+    ['Pretensão futura (ref.: somente estudar)', [['Estudar e trabalhar', -5.7, 0.7, -1.8, 3.2, false], ['Ainda não sabe', -27.0, -11.6, -14.8, -8.4, true], ['Somente trabalhar', -43.1, -23.1, -26.4, -19.8, true]]],
+    ['Não sabe a escolaridade (ref.: informou)', [['Da mãe', -22.4, -10.3, -12.1, -8.5, true], ['Do pai', -15.0, -5.7, -7.3, -4.0, true]]],
+  ];
+  function drawAjuste() {
+    const c = document.getElementById('chAjuste');
+    const W = widthOf(c), rowH = 34, headH = 28, m = { t: 8, r: 20, b: 30, l: Math.min(170, W * 0.32) };
+    const nRows = AJUSTE.reduce((a, [, r]) => a + r.length, 0);
+    const H = m.t + m.b + nRows * rowH + AJUSTE.length * headH;
+    const s = svgIn(c, W, H, 'Diferença bruta e diferença em mesmas condições, em pontos SAEB');
+    const lo = -50, hi = 20, x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+    for (let v = lo; v <= hi; v += 10) {
+      el('line', { x1: x(v), x2: x(v), y1: m.t, y2: H - m.b, class: v === 0 ? 'axis' : 'gridline', 'stroke-width': v === 0 ? 1.5 : 1 }, s);
+      txt(s, x(v), H - m.b + 18, (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), { 'text-anchor': 'middle' });
+    }
+    let yy = m.t;
+    AJUSTE.forEach(([titulo, linhas]) => {
+      txt(s, 0, yy + 18, titulo, { class: 'strong', 'font-size': 12.5 });
+      yy += headH;
+      linhas.forEach(([nome, bruta, aj, l, h, sig]) => {
+        const cy = yy + rowH / 2, row = el('g', { class: 'row' }, s);
+        el('rect', { x: 0, y: yy + 1, width: W, height: rowH - 2, rx: 6, class: 'row-hl' }, row);
+        txt(row, m.l - 12, cy + 4, nome, { 'text-anchor': 'end', class: 'ink', 'font-size': W < 480 ? 11.5 : 13 });
+        const bar = (v, y0, hgt, fill, stroke) => el('rect', { x: Math.min(x(0), x(v)), y: y0, width: Math.max(1, Math.abs(x(v) - x(0))), height: hgt, rx: 3, fill, stroke: stroke || 'none' }, row);
+        bar(bruta, cy - 11, 9, 'var(--accent-soft)', 'var(--accent)');
+        bar(aj, cy + 1, 9, sig ? 'var(--accent)' : 'var(--ref)');
+        el('line', { x1: x(l), x2: x(h), y1: cy + 5.5, y2: cy + 5.5, stroke: 'var(--ink)', 'stroke-width': 1.5 }, row);
+        const lab = (v, yv) => txt(row, v < 0 ? x(v) - 5 : x(v) + 5, yv, sgn(v), { 'text-anchor': v < 0 ? 'end' : 'start', 'font-size': 11 });
+        lab(bruta, cy - 3); lab(aj < 0 ? Math.min(aj, l) : Math.max(aj, h), cy + 9).textContent = sgn(aj);
+        const hit = el('rect', { x: 0, y: yy, width: W, height: rowH, class: 'hit' }, row);
+        const pct = br(100 * (1 - aj / bruta));
+        bindTip(hit, `<b>${nome}</b><br>Diferença bruta: ${sgn(bruta)} pontos<br>Em mesmas condições: <b>${sgn(aj)}</b> pontos<br>IC 95%: ${sgn(l)} a ${sgn(h)}${sig ? '' : '<br>Não significativa'}` + (Math.sign(aj) === Math.sign(bruta) ? `<br>${pct}% da diferença bruta associada às demais características` : ''));
+        yy += rowH;
+      });
+    });
+  }
+
+  /* ---------- 4. Fatores ---------- */
+  const FATORES = [
+    ['Atributos individuais', 'Sexo: feminino (ref.: masculino)', 7.1, 5.7, 8.5, 'p < 0,001'],
+    ['Atributos individuais', 'Raça/cor: parda (ref.: branca)', -8.9, -10.3, -7.5, 'p < 0,001'],
+    ['Atributos individuais', 'Raça/cor: preta', -12.6, -14.5, -10.6, 'p < 0,001'],
+    ['Atributos individuais', 'Raça/cor: amarela', -13.5, -17.5, -9.4, 'p < 0,001'],
+    ['Atributos individuais', 'Raça/cor: indígena', -27.3, -33.5, -21.2, 'p < 0,001'],
+    ['Atributos individuais', 'Idade (por ano)', -0.9, -1.9, 0.2, 'p = 0,114'],
+    ['Atributos individuais', 'Reprovação (0 a 2)', -9.8, -11.8, -7.9, 'p < 0,001'],
+    ['Atributos individuais', 'Q23b: discorda de “sinto-me motivado(a) a usar o que foi ensinado” (0 a 3)', 11.2, 10.2, 12.2, 'p < 0,001'],
+    ['Atributos individuais', 'Pretensão: estudar e trabalhar (ref.: somente estudar)', 0.7, -1.8, 3.2, 'p = 0,587'],
+    ['Atributos individuais', 'Pretensão: ainda não sabe', -11.6, -14.8, -8.4, 'p < 0,001'],
+    ['Atributos individuais', 'Pretensão: somente trabalhar', -23.1, -26.4, -19.8, 'p < 0,001'],
+    ['Uso do tempo', 'Tempo de estudos fora da escola (0 a 3)', 7.0, 6.2, 7.9, 'p < 0,001'],
+    ['Uso do tempo', 'Cursos extracurriculares (0 a 3)', 1.3, 0.6, 2.0, 'p < 0,001'],
+    ['Uso do tempo', 'Trabalho doméstico (0 a 3)', 1.4, 0.7, 2.1, 'p < 0,001'],
+    ['Uso do tempo', 'Trabalho fora de casa (0 a 3)', -1.7, -2.2, -1.2, 'p < 0,001'],
+    ['Contexto familiar', 'Mora com a mãe', 3.9, 1.9, 5.8, 'p < 0,001'],
+    ['Contexto familiar', 'Mora com o pai', -1.1, -2.9, 0.7, 'p = 0,217'],
+    ['Contexto familiar', 'Escolaridade da mãe (1 a 5)', 2.7, 2.0, 3.3, 'p < 0,001'],
+    ['Contexto familiar', 'Escolaridade do pai (1 a 5)', 1.1, 0.5, 1.7, 'p < 0,001'],
+    ['Contexto familiar', 'Não sabe a escolaridade da mãe', -10.3, -12.1, -8.5, 'p < 0,001'],
+    ['Contexto familiar', 'Não sabe a escolaridade do pai', -5.7, -7.3, -4.0, 'p < 0,001'],
+    ['Contexto familiar', 'Responsáveis incentivam o estudo (0 a 2)', -3.8, -5.1, -2.5, 'p < 0,001'],
+    ['Contexto familiar', 'Responsáveis conversam sobre a escola (0 a 2)', -0.8, -1.7, 0.1, 'p = 0,086'],
+    ['Recursos do domicílio', 'Computadores (0 a 3)', 2.6, 1.8, 3.5, 'p < 0,001'],
+    ['Recursos do domicílio', 'Wi-Fi', 3.6, 1.1, 6.1, 'p = 0,006'],
+    ['Recursos do domicílio', 'Mesa para estudar', 0.4, -0.9, 1.8, 'p = 0,536'],
+    ['Recursos do domicílio', 'Quarto só seu', -0.5, -1.8, 0.8, 'p = 0,479'],
+  ];
+  const segF = document.getElementById('segFatores');
+  let fatorAtual = 'Todos';
+  ['Todos', 'Atributos individuais', 'Uso do tempo', 'Contexto familiar', 'Recursos do domicílio'].forEach(k => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = k; b.id = 'f-' + k.replace(/\W+/g, '');
+    b.setAttribute('aria-pressed', k === fatorAtual); b.onclick = () => { fatorAtual = k; [...segF.children].forEach(x => x.setAttribute('aria-pressed', x === b)); drawFatores(); };
+    segF.appendChild(b);
+  });
+  function wrapLabel(s, max) {
+    const words = s.split(' '), lines = []; let cur = '';
+    words.forEach(w => { if ((cur + ' ' + w).trim().length > max && cur) { lines.push(cur); cur = w; } else cur = (cur + ' ' + w).trim(); });
+    if (cur) lines.push(cur); return lines;
+  }
+  function drawFatores() {
+    const c = document.getElementById('chFatores');
+    const lista = FATORES.filter(f => fatorAtual === 'Todos' || f[0] === fatorAtual);
+    const W = widthOf(c), narrow = W < 560;
+    const m = { t: 10, r: 22, b: 30, l: narrow ? Math.round(W * 0.46) : 330 };
+    const maxCh = Math.floor((m.l - 16) / 6.6);
+    const rows = lista.map(f => ({ f, lines: wrapLabel(f[1], maxCh) }));
+    const heads = fatorAtual === 'Todos' ? 4 : 0, headH = 26;
+    const rowH = r => Math.max(28, 14 + r.lines.length * 15);
+    const H = m.t + m.b + rows.reduce((a, r) => a + rowH(r), 0) + heads * headH;
+    const s = svgIn(c, W, H, 'Coeficientes da regressão em pontos SAEB com intervalos de 95%');
+    const lo = -40, hi = 15, x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
+    for (let v = lo; v <= hi; v += 5) {
+      el('line', { x1: x(v), x2: x(v), y1: m.t, y2: H - m.b, class: v === 0 ? 'axis' : 'gridline', 'stroke-width': v === 0 ? 1.5 : 1 }, s);
+      if (v % 10 === 0 || !narrow) txt(s, x(v), H - m.b + 18, (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), { 'text-anchor': 'middle' });
+    }
+    let yy = m.t, grupo = null;
+    rows.forEach(r => {
+      const [g, nome, est, l, h, p] = r.f;
+      if (heads && g !== grupo) { grupo = g; txt(s, 0, yy + 17, g, { class: 'strong', 'font-size': 12.5 }); yy += headH; }
+      const rh = rowH(r), cy = yy + rh / 2, row = el('g', { class: 'row' }, s);
+      el('rect', { x: 0, y: yy + 1, width: W, height: rh - 2, rx: 6, class: 'row-hl' }, row);
+      r.lines.forEach((ln, k) => txt(row, m.l - 12, cy + 4 + (k - (r.lines.length - 1) / 2) * 15, ln, { 'text-anchor': 'end', class: 'ink', 'font-size': narrow ? 11.5 : 12.5 }));
+      const sig = !(l <= 0 && h >= 0);
+      const col = !sig ? 'var(--ref)' : est > 0 ? 'var(--accent)' : 'var(--ochre)';
+      el('line', { x1: x(l), x2: x(h), y1: cy, y2: cy, stroke: col, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, row);
+      el('circle', { cx: x(est), cy, r: 5.5, fill: col, stroke: 'var(--surface)', 'stroke-width': 2 }, row);
+      const right = est >= 0 || x(l) - 46 < m.l;
+      txt(row, right ? x(h) + 7 : x(l) - 7, cy + 4, sgn(est), { 'text-anchor': right ? 'start' : 'end', 'font-size': 11.5, class: 'ink' });
+      const hit = el('rect', { x: 0, y: yy, width: W, height: rh, class: 'hit' }, row);
+      bindTip(hit, `<b>${nome}</b><br>Coeficiente: <b>${sgn(est)}</b> pontos<br>IC 95%: ${sgn(l)} a ${sgn(h)}<br>${p}`);
+      yy += rh;
+    });
+  }
+
+  /* ---------- 5. Métodos ---------- */
+  const METODOS = [
+    ['Q23b (motivação para usar o que foi ensinado)', 1, 1, 1, [1, 1, 1], true],
+    ['Pretensão futura', 2, 2, 2, [1, 1, 1], true],
+    ['Tempo de estudos', 3, 3, 3, [1, 1, 1], true],
+    ['Reprovação', 6, 4, 7, [1, 1, 1], false],
+    ['Sexo', 5, 11, 6, [1, 0, 1], false],
+    ['Trabalho fora de casa', 8, 10, 4, [1, 0, 1], false],
+    ['Escolaridade da mãe', 7, 8, 8, [1, 0, 1], false],
+    ['Computadores', 9, 5, 9, [1, 1, 1], false],
+    ['Raça/cor', 4, 18, 5, [1, 0, 1], false],
+    ['Responsáveis incentivam o estudo', 10, 6, 13, [1, 0, 1], false],
+    ['Trabalho doméstico', 12, 7, 10, [1, 1, 1], false],
+    ['Idade', 16, 9, 12, [0, 0, 1], false],
+    ['Tempo em cursos', 11, 16, 11, [1, 0, 1], false],
+    ['Escolaridade do pai', 14, 14, 14, [1, 0, 0], false],
+    ['Responsáveis conversam sobre a escola', 17, 13, 15, [0, 0, 0], false],
+    ['Mora com o pai', 18, 12, 17, [0, 0, 0], false],
+    ['Mora com a mãe', 13, 17, 18, [1, 0, 0], false],
+    ['Mesa para estudar', 20, 15, 16, [0, 0, 0], false],
+    ['Wi-Fi', 15, 19, 19, [1, 0, 0], false],
+    ['Quarto só seu', 19, 20, 20, [0, 0, 0], false],
+  ];
+  let metodoSel = null;
+  function drawMetodos() {
+    const c = document.getElementById('chMetodos');
+    const W = widthOf(c), narrow = W < 560, rowH = 30;
+    const m = { t: 30, r: 16, b: 10, l: narrow ? Math.round(W * 0.42) : 300 };
+    const H = m.t + m.b + METODOS.length * rowH;
+    const s = svgIn(c, W, H, 'Posição de cada atributo nos rankings de regressão, RReliefF e Random Forest');
+    const x = v => m.l + (v - 1) / 19 * (W - m.l - m.r);
+    el('rect', { x: x(1) - 8, y: m.t - 6, width: x(5.5) - x(1) + 8, height: H - m.t - m.b + 6, fill: 'var(--accent-soft)', opacity: .45, rx: 6 }, s);
+    txt(s, x(1) - 6, m.t - 12, '5 primeiros', { 'font-size': 11 });
+    [1, 5, 10, 15, 20].forEach(v => txt(s, x(v), m.t - 12, v === 1 ? '' : v + 'º', { 'text-anchor': 'middle', 'font-size': 11 }));
+    const maxCh = Math.floor((m.l - 14) / 6.6);
+    METODOS.forEach(([nome, a, b, cc, rel, conv], i) => {
+      const cy = m.t + i * rowH + rowH / 2;
+      const row = el('g', { class: 'row' + (metodoSel === i ? ' sel' : '') }, s);
+      el('rect', { x: 0, y: cy - rowH / 2 + 1, width: W, height: rowH - 2, rx: 6, class: 'row-hl' }, row);
+      const label = nome.length > maxCh ? nome.slice(0, maxCh - 1) + '…' : nome;
+      txt(row, m.l - 14, cy + 4, label, { 'text-anchor': 'end', class: conv ? 'strong' : 'ink', 'font-size': narrow ? 11.5 : 12.5 });
+      const dim = metodoSel !== null && metodoSel !== i ? .28 : 1;
+      el('line', { x1: x(Math.min(a, b, cc)), x2: x(Math.max(a, b, cc)), y1: cy, y2: cy, stroke: 'var(--faint)', 'stroke-width': 1.5, opacity: dim }, row);
+      const g2 = el('g', { opacity: dim }, row);
+      el('circle', { cx: x(a), cy: cy - 4, r: 5.5, fill: 'var(--s1)', stroke: 'var(--surface)', 'stroke-width': 1.5 }, g2);
+      el('rect', { x: x(b) - 5, y: cy - 5, width: 10, height: 10, rx: 1.5, fill: 'var(--s2)', stroke: 'var(--surface)', 'stroke-width': 1.5 }, g2);
+      el('path', { d: `M${x(cc)},${cy - 2} l6,10 h-12 Z`, fill: 'var(--s3)', stroke: 'var(--surface)', 'stroke-width': 1.5 }, g2);
+      const hit = el('rect', { x: 0, y: cy - rowH / 2, width: W, height: rowH, class: 'hit', style: 'cursor:pointer' }, row);
+      const r = v => v ? 'relevante' : 'não relevante';
+      bindTip(hit, `<b>${nome}</b>${conv ? ' · convergente' : ''}<br>Regressão: ${a}º (${r(rel[0])})<br>RReliefF: ${b}º (${r(rel[1])})<br>Random Forest: ${cc}º (${r(rel[2])})`);
+      hit.addEventListener('click', () => { metodoSel = metodoSel === i ? null : i; drawMetodos(); });
+      hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); metodoSel = metodoSel === i ? null : i; drawMetodos(); document.querySelectorAll('#chMetodos .hit')[i].focus(); } });
+    });
+  }
+
+  /* ---------- 6. Resiliência ---------- */
+  const waffle = document.getElementById('waffle');
+  for (let i = 0; i < 100; i++) {
+    const d = document.createElement('span');
+    const col = i % 20, lin = Math.floor(i / 20);
+    const k = col * 5 + lin;      /* preenche por colunas, da esquerda para a direita */
+    if (k < 18) d.className = 'r'; else if (k < 25) d.className = 'e';
+    waffle.appendChild(d);
+  }
+  const RESIL = [
+    ['Branca', 1175, 284, 24.2, 21.8, 26.7], ['Parda', 3376, 591, 17.5, 16.3, 18.8], ['Preta', 995, 178, 17.9, 15.6, 20.4],
+    ['Amarela', 150, 15, 10.0, 6.2, 15.8], ['Indígena', 108, 5, 4.6, 2.0, 10.4], null,
+    ['Feminino', 3656, 699, 19.1, 17.9, 20.4], ['Masculino', 2148, 374, 17.4, 15.9, 19.1],
+  ];
+  function drawResil() {
+    const c = document.getElementById('chResil');
+    const W = widthOf(c), rowH = 32, m = { t: 8, r: 34, b: 28, l: 84 };
+    const H = m.t + m.b + RESIL.length * rowH - 12;
+    const s = svgIn(c, W, H, 'Taxa de resiliência por raça/cor e sexo, com intervalos de 95%');
+    const x = v => m.l + v / 30 * (W - m.l - m.r);
+    for (let v = 0; v <= 30; v += 10) {
+      el('line', { x1: x(v), x2: x(v), y1: m.t, y2: H - m.b, class: 'gridline' }, s);
+      txt(s, x(v), H - m.b + 18, v + '%', { 'text-anchor': 'middle' });
+    }
+    el('line', { x1: x(25), x2: x(25), y1: m.t, y2: H - m.b, stroke: 'var(--ochre)', 'stroke-dasharray': '4 4', 'stroke-width': 1.5 }, s);
+    let yy = m.t;
+    RESIL.forEach(r => {
+      if (!r) { yy += rowH - 12; return; }
+      const [nome, n, k, t, l, h] = r, cy = yy + rowH / 2, row = el('g', { class: 'row' }, s);
+      el('rect', { x: 0, y: yy + 1, width: W, height: rowH - 2, rx: 6, class: 'row-hl' }, row);
+      txt(row, m.l - 10, cy + 4, nome, { 'text-anchor': 'end', class: 'ink', 'font-size': 12.5 });
+      el('rect', { x: x(0), y: cy - 7, width: x(t) - x(0), height: 14, rx: 3, fill: 'var(--accent)' }, row);
+      el('line', { x1: x(l), x2: x(h), y1: cy, y2: cy, stroke: 'var(--ink)', 'stroke-width': 1.5 }, row);
+      [l, h].forEach(v => el('line', { x1: x(v), x2: x(v), y1: cy - 4, y2: cy + 4, stroke: 'var(--ink)', 'stroke-width': 1.5 }, row));
+      txt(row, x(h) + 6, cy + 4, br(t) + '%', { class: 'ink', 'font-size': 11.5 });
+      const hit = el('rect', { x: 0, y: yy, width: W, height: rowH, class: 'hit' }, row);
+      bindTip(hit, `<b>${nome}</b><br>${intBR(k)} resilientes de ${intBR(n)} desfavorecidos<br>Taxa: <b>${br(t)}%</b> (IC 95%: ${br(l)} a ${br(h)})${n < 200 ? '<br>Grupo pequeno: interpretar com cautela' : ''}`);
+      yy += rowH;
+    });
+  }
+
+  /* ---------- 7. Indígenas ---------- */
+  const INDIG = [
+    ['Diferença bruta', -44.4, 'Média dos indígenas menos a dos brancos'],
+    ['Entre colegas da mesma escola', -39.1, 'Sem controles, comparando apenas estudantes da mesma escola'],
+    ['Com as demais características do estudante', -27.3, 'Modelo principal: escolaridade dos pais, recursos, trajetória, uso do tempo etc.'],
+    ['+ língua falada em casa', -24.7, 'Modelo principal com a língua falada em casa'],
+    ['Com as características e na mesma escola', -26.3, 'Modelo principal com efeitos fixos de escola'],
+  ];
+  function drawIndig() {
+    const c = document.getElementById('chIndig');
+    const W = widthOf(c), narrow = W < 560, rowH = 38, m = { t: 6, r: 50, b: 28, l: narrow ? Math.round(W * 0.48) : 320 };
+    const H = m.t + m.b + INDIG.length * rowH;
+    const s = svgIn(c, W, H, 'Diferença de proficiência dos estudantes indígenas em relação aos brancos');
+    const x = v => m.l + (-v) / 50 * (W - m.l - m.r);
+    for (let v = 0; v >= -50; v -= 10) {
+      el('line', { x1: x(v), x2: x(v), y1: m.t, y2: H - m.b, class: v === 0 ? 'axis' : 'gridline' }, s);
+      txt(s, x(v), H - m.b + 18, v === 0 ? '0' : '−' + (-v), { 'text-anchor': 'middle' });
+    }
+    const maxCh = Math.floor((m.l - 14) / 6.6);
+    INDIG.forEach(([nome, v, desc], i) => {
+      const cy = m.t + i * rowH + rowH / 2, row = el('g', { class: 'row' }, s);
+      el('rect', { x: 0, y: cy - rowH / 2 + 1, width: W, height: rowH - 2, rx: 6, class: 'row-hl' }, row);
+      const lines = wrapLabel(nome, maxCh);
+      lines.forEach((ln, k) => txt(row, m.l - 12, cy + 4 + (k - (lines.length - 1) / 2) * 14, ln, { 'text-anchor': 'end', class: 'ink', 'font-size': narrow ? 11.5 : 12.5 }));
+      el('rect', { x: x(0), y: cy - 9, width: x(v) - x(0), height: 18, rx: 3, fill: i === 0 ? 'var(--ochre)' : 'var(--accent)' }, row);
+      txt(row, x(v) + 6, cy + 4, sgn(v), { class: 'strong', 'font-size': 12.5 });
+      const hit = el('rect', { x: 0, y: cy - rowH / 2, width: W, height: rowH, class: 'hit' }, row);
+      bindTip(hit, `<b>${nome}</b><br>${sgn(v)} pontos<br>${desc}`);
+    });
+  }
+
+  /* ---------- Navegação ---------- */
+  const links = [...document.querySelectorAll('nav.sec a')];
+  const alvos = links.map(a => document.querySelector(a.getAttribute('href')));
+  function marcar() {
+    let atual = 0;
+    alvos.forEach((t, i) => { if (t && t.getBoundingClientRect().top < 140) atual = i; });
+    links.forEach((a, i) => a.classList.toggle('on', i === atual));
+  }
+  window.addEventListener('scroll', marcar, { passive: true });
+
+  function tudo() { drawNiveis(); drawGrupos(); drawAjuste(); drawFatores(); drawMetodos(); drawResil(); drawIndig(); marcar(); }
+  let tmr; window.addEventListener('resize', () => { clearTimeout(tmr); tmr = setTimeout(tudo, 120); });
+  tudo();
+})();
+</script>
+
+</body>
+</html>
